@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 
-export default function Register() {
+export default function Auth() {
   return (
     <Outlet />
   )

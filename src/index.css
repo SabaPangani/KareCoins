@@ -29,6 +29,6 @@
     @apply flex flex-col justify-center content-center gap-y-5 w-[100%] px-10 h-screen mx-auto mt-[50px] text-center text-white
   }
   .auth-btn{
-    @apply w-[113px] h-[50px] bg-white rounded-[5px]
+    @apply w-[113px] h-[50px] bg-white rounded-[5px] disabled:opacity-30
   }
 }

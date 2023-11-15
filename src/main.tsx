@@ -5,19 +5,24 @@ import Login from "./components/Login";
 import "./index.css";
 import Card from "./components/UI/card";
 import RegisterComp from "./components/RegisterComp";
-import RegisterName from "./components/ReisterName";
+import RegisterName from "./components/RegisterName";
 import RegisterPassword from "./components/RegisterPass";
-import Register from "./pages/Register";
+import Auth from "./pages/Auth";
+import { AuthContextProvider } from "./store/AuthContext";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <Login />,
+    path: "/",
+    element: <h1>Home page</h1>,
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "/auth",
+    element: <Auth />,
     children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
       {
         path: "step1",
         element: <RegisterName />,
@@ -35,8 +40,10 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Card>
-      <RouterProvider router={router} />
-    </Card>
+    <AuthContextProvider>
+      <Card>
+        <RouterProvider router={router} />
+      </Card>
+    </AuthContextProvider>
   </React.StrictMode>
 );

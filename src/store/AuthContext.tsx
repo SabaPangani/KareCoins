@@ -1,21 +1,23 @@
-import React, { ReactNode, createContext, useReducer } from "react";
-
-enum Role {
-  "Admin",
-  "Head",
-  "User",
-}
-
-interface User {
-  name: string;
-  email: string;
-  password: string;
-  contactNumber: number;
-  companyId: number;
-  departmentId: number;
-  role: Role;
-  jobTitle: string;
-}
+import React, {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import { User } from "../shared/types/User";
+import { Role } from "../shared/enums/Role";
+const initialUser: User = {
+  name: "",
+  email: "",
+  password: "",
+  contactNumber: 0,
+  companyName: "",
+  companyId: 0,
+  departmentId: 0,
+  role: Role.User,
+  jobTitle: "",
+};
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -24,22 +26,28 @@ interface AuthState {
 
 interface AuthAction {
   type: string;
-  payload: User | null;
+  payload: User;
 }
 
 interface AuthContextType {
-  state: AuthState;
   dispatch: React.Dispatch<AuthAction>;
+  user: User;
+  handleStep1: (name: string, phoneNum: number) => void;
+  handleStep2: (compName: string, email: string) => void;
+  handleStep3: (password: string) => void;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  user: null,
+  user: initialUser,
 };
 
 export const AuthContext = createContext<AuthContextType>({
-  state: initialState,
   dispatch: () => {},
+  user: initialUser,
+  handleStep1: () => {},
+  handleStep2: () => {},
+  handleStep3: () => {},
 });
 
 interface Props {
@@ -59,11 +67,39 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-const AuthContextProvider = ({ children }: Props) => {
+export const AuthContextProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const [user, setUser] = useState<User>(initialUser);
+
+  const handleStep1 = (name: string, phoneNum: number) => {
+    setUser((prev) => {
+      return { ...prev, name, contactNumber: phoneNum };
+    });
+  };
+  const handleStep2 = (companyName: string, email: string) => {
+    setUser((prev) => {
+      return { ...prev, companyName, email };
+    });
+  };
+  const handleStep3 = (password: string) => {
+    setUser((prev) => {
+      return { ...prev, password };
+    });
+  };
+  useEffect(() => {
+    console.log(
+      user.name,
+      user.contactNumber,
+      user.companyName,
+      user.email,
+      user.password
+    );
+  }, [user]);
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider
+      value={{ user, dispatch, handleStep1, handleStep2, handleStep3 }}
+    >
       {children}
     </AuthContext.Provider>
   );

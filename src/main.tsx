@@ -9,11 +9,19 @@ import RegisterName from "./components/RegisterName";
 import RegisterPassword from "./components/RegisterPass";
 import Auth from "./pages/Auth";
 import { AuthContextProvider } from "./store/AuthContext";
+import Root from "./routes/root";
+import Home from "./pages/Home";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>Home page</h1>,
+    element: <Root />,
+    children: [
+      {
+        path: "home",
+        element: <Home />,
+      },
+    ],
   },
   {
     path: "/auth",

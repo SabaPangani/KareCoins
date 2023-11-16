@@ -25,10 +25,13 @@
   .input {
     @apply w-[100%] min-h-[50px] bg-white rounded-[5px] placeholder-[#797979] outline-none placeholder:font-normal placeholder:text-sm px-2 text-black;
   }
-  .form-parent{
-    @apply flex flex-col justify-center content-center gap-y-5 w-[100%] px-10 h-screen mx-auto mt-[50px] text-center text-white
+  .error {
+    @apply w-[100%] min-h-[50px] bg-white rounded-[5px] placeholder-[#797979] outline-none border-2 border-solid border-red-500 placeholder:font-normal placeholder:text-sm px-2 text-black;
   }
-  .auth-btn{
-    @apply w-[113px] h-[50px] bg-white rounded-[5px] disabled:opacity-30
+  .form-parent {
+    @apply flex flex-col justify-center content-center gap-y-5 w-[100%] px-10 h-screen mx-auto mt-[50px] text-center text-white;
+  }
+  .auth-btn {
+    @apply w-[113px] h-[50px] bg-white rounded-[5px] disabled:opacity-30;
   }
 }

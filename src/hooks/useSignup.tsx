@@ -8,6 +8,7 @@ export default function useSignup() {
   const [error, setError] = useState("");
   const signup = async (user: User) => {
     setIsLoading(true);
+    console.log(user)
     try {
       const res = await fetch("http://localhost:4000/api/auth/signup", {
         method: "POST",
@@ -18,8 +19,8 @@ export default function useSignup() {
       if (!res.ok) {
         const json = await res.json();
         setIsLoading(false);
-        setError(json.error);
-        console.log(error);
+        setError(json.message);
+        console.error(json.message);
         return;
       }
 

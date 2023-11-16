@@ -2,27 +2,38 @@ import React, { useState } from "react";
 import coinLogo from "../assets/coinLogo.png";
 import { useAuth } from "../hooks/useAuth";
 import useSignup from "../hooks/useSignup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useInput from "../hooks/useInput";
 export default function RegisterPassword() {
   const { signup } = useSignup();
-  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const { user, handleStep3 } = useAuth();
+  const {
+    value: password,
+    isValidInput: isPasswordValid,
+    setIsFormSubmitted,
+    isFormSubmitted,
+    valueChangeHandler: passChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(password);
+    setIsFormSubmitted(true);
 
     if (password !== confirmPassword) {
       console.error("Passwords do not match");
       return;
     }
 
-    handleStep3(password);
-    signup(user);
+    if (!isFormInvalid) {
+      await signup({ ...user, password });
+      navigate("/auth/login");
+    }
   };
-
+  const isFormInvalid = !isPasswordValid;
+  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <img
@@ -36,12 +47,12 @@ export default function RegisterPassword() {
             Password
           </label>
           <input
-            className="input"
+            className={className}
             id="password"
             type="password"
             placeholder="Enter password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={passChangeHandler}
           />
         </div>
         <div className="flex flex-col text-start">
@@ -49,23 +60,27 @@ export default function RegisterPassword() {
             Confirm password
           </label>
           <input
-            className="input"
+            className={className}
             id="confirmPassword"
             type="password"
             placeholder="Confirm password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={passChangeHandler}
           />
         </div>
-
-        <p className="text-white text-sm font-light underline">
-          Already have an account?
-        </p>
+        {isFormInvalid && isFormSubmitted && (
+          <p className="text-red-500">Passwords do not match!</p>
+        )}
+        <Link to={"/auth/login"}>
+          <p className="text-white text-sm font-light underline">
+            Already have an account?
+          </p>
+        </Link>
 
         <div className="flex justify-end text-black font-medium">
-            <button className="auth-btn" type="submit">
-              Register
-            </button>
+          <button className="auth-btn" type="submit">
+            Register
+          </button>
         </div>
       </form>
     </>

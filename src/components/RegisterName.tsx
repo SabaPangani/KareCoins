@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import coinLogo from "../assets/coinLogo.png";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import useInput from "../hooks/useInput";
 export default function RegisterName() {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const { handleStep1 } = useAuth();
+  const navigate = useNavigate();
 
-  const handleValidation = () => {
-    const isValid = name.trim() !== "" && /^\d{9}$/.test(phoneNumber);
+  const {
+    value: name,
+    isValidInput: isNameValid,
+    setIsFormSubmitted,
+    isFormSubmitted,
+    valueChangeHandler: nameChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
-    setIsFormValid(isValid);
-    return isValid;
-  };
+  const {
+    value: phoneNumber,
+    isValidInput: isPhoneValid,
+    valueChangeHandler: phoneChangeHandler,
+  } = useInput((value: string) => /^\d{9}$/.test(value));
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
 
-    if (handleValidation()) {
+    if (!isFormInvalid) {
       handleStep1(name, parseInt(phoneNumber));
+      navigate("/auth/step2");
     }
   };
-
+  const isFormInvalid = !isNameValid || !isPhoneValid
+  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <img
@@ -39,12 +45,12 @@ export default function RegisterName() {
             Name
           </label>
           <input
-            className="input"
+            className={className}
             id="name"
             type="text"
             placeholder="Enter your name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={nameChangeHandler}
           />
         </div>
         <div className="flex flex-col text-start">
@@ -52,37 +58,29 @@ export default function RegisterName() {
             Phone number
           </label>
           <input
-            className="input"
+            className={className}
             id="phone"
             type="tel"
             placeholder="Enter your phone number"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={phoneChangeHandler}
           />
         </div>
 
-        {isFormSubmitted && !isFormValid && (
-          <p className="text-red-500">
-            Please enter valid name and phone number
-          </p>
+        {isFormInvalid && isFormSubmitted && (
+          <p className="text-red-500">Email or password is incorrect!</p>
         )}
 
-        <p className="text-white text-sm font-light underline">
-          Already have an account?
-        </p>
+        <Link to={"/auth/login"}>
+          <p className="text-white text-sm font-light underline">
+            Already have an account?
+          </p>
+        </Link>
 
         <div className="flex justify-end text-black font-medium">
-          {isFormValid ? (
-            <Link to={"/auth/step2"}>
-              <button className="auth-btn" type="submit">
-                Next
-              </button>
-            </Link>
-          ) : (
-            <button className="auth-btn" type="submit">
-              Next
-            </button>
-          )}
+          <button className="auth-btn" type="submit">
+            Next
+          </button>
         </div>
       </form>
     </>

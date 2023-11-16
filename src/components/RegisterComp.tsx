@@ -1,19 +1,35 @@
 import { useState } from "react";
 import coinLogo from "../assets/coinLogo.png";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useInput from "../hooks/useInput";
 export default function RegisterComp() {
-  const [companyName, setCompanyName] = useState("");
-  const [email, setEmail] = useState("");
-
+  const navigate = useNavigate();
   const { handleStep2 } = useAuth();
+  const {
+    value: companyName,
+    isValidInput: isCompNameValid,
+    setIsFormSubmitted,
+    isFormSubmitted,
+    valueChangeHandler: compNameChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
+
+  const {
+    value: email,
+    isValidInput: isEmailValid,
+    valueChangeHandler: emailChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleStep2(companyName, email,);
-    console.log(companyName, email);
+    setIsFormSubmitted(true);
+    if (!isFormInvalid) {
+      handleStep2(companyName, email);
+      navigate("/auth/step3");
+    }
   };
-
+  const isFormInvalid = !isCompNameValid || !isEmailValid;
+  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <img
@@ -27,12 +43,12 @@ export default function RegisterComp() {
             Company
           </label>
           <input
-            className="input"
+            className={className}
             id="company"
             type="text"
             placeholder="Enter company name"
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            onChange={compNameChangeHandler}
           />
         </div>
         <div className="flex flex-col text-start">
@@ -40,25 +56,27 @@ export default function RegisterComp() {
             Email
           </label>
           <input
-            className="input"
+            className={className}
             id="email"
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={emailChangeHandler}
           />
         </div>
-
-        <p className="text-white text-sm font-light underline">
-          Already have an account?
-        </p>
+        {isFormInvalid && isFormSubmitted && (
+          <p className="text-red-500">Company or email is incorrect!</p>
+        )}
+        <Link to={"/auth/login"}>
+          <p className="text-white text-sm font-light underline">
+            Already have an account?
+          </p>
+        </Link>
 
         <div className="flex justify-end text-black font-medium">
-          <Link to={"/auth/step3"}>
-            <button className="auth-btn" type="submit">
-              Next
-            </button>
-          </Link>
+          <button className="auth-btn" type="submit">
+            Next
+          </button>
         </div>
       </form>
     </>

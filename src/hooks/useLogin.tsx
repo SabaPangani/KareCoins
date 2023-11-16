@@ -9,7 +9,7 @@ export default function useLogin() {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch("localhost:4000/api/auth/login", {
+      const res = await fetch("http://localhost:4000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -18,7 +18,8 @@ export default function useLogin() {
       if (!res.ok) {
         const json = await res.json();
         setIsLoading(false);
-        setError(json.error);
+        setError(json.message);
+        console.error(json.message);
         return;
       }
 

@@ -71,7 +71,7 @@ export default function Login() {
         </div>
 
         {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-500">Email or password is incorrect!</p>
+          <p className="text-red-600">Email or password is incorrect!</p>
         )}
 
         <Link to={"/auth/step1"}>

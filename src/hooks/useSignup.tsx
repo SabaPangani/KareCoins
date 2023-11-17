@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { User } from "../shared/types/User";
-import { useAuth } from "./useAuth";
+// import { useAuth } from "./useAuth";
 
 export default function useSignup() {
-  const { dispatch } = useAuth();
+  // const { dispatch } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const signup = async (user: User) => {
     setIsLoading(true);
-    console.log(user)
+    console.log(user);
     try {
       const res = await fetch("http://localhost:4000/api/auth/signup", {
         method: "POST",
@@ -24,9 +24,6 @@ export default function useSignup() {
         return;
       }
 
-      const json = await res.json();
-
-      dispatch({ type: "LOGIN", payload: json });
     } catch (err) {
       setIsLoading(false);
       setError("An error occurred. Please try again.");

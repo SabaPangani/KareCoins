@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useAuth } from "./useAuth";
 
 export default function useLogin() {
-  const { dispatch } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,10 +22,12 @@ export default function useLogin() {
       }
 
       const json = await res.json();
-      console.log(json);
 
-      dispatch({ type: "LOGIN", payload: json });
-      localStorage.setItem("token", JSON.stringify(json.token));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email: json.email, token: json.token })
+      );
+      localStorage.setItem("company", JSON.stringify(json.companyId));
     } catch (err) {
       setIsLoading(false);
       setError("An error occurred. Please try again.");

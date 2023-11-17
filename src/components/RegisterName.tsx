@@ -69,7 +69,7 @@ export default function RegisterName() {
         </div>
 
         {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-500">Name or phone number!</p>
+          <p className="text-red-600">Name or phone number!</p>
         )}
 
         <Link to={"/auth/login"}>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import coinLogo from "../assets/coinLogo.png";
 import { useAuth } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,11 +31,10 @@ export default function RegisterComp() {
   const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
-      <img
-        className="absolute translate-x-[-50%] translate-y-[15%] left-[50%] top-[15%] w-18"
-        src={coinLogo}
-        alt=""
-      />
+      <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
+        <img className="w-18" src={coinLogo} alt="" />
+        <h1 className="text-3xl text-white">Sign Up</h1>
+      </div>
       <form onSubmit={handleSubmit} className="form-parent">
         <div className="flex flex-col text-start">
           <label className="ml-1 mb-1" htmlFor="company">

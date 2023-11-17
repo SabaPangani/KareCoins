@@ -24,6 +24,7 @@ export default function useLogin() {
       }
 
       const json = await res.json();
+      console.log(json);
 
       dispatch({ type: "LOGIN", payload: json });
       localStorage.setItem("token", JSON.stringify(json.token));

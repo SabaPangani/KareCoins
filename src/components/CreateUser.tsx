@@ -2,11 +2,11 @@ import { useDep } from "../hooks/useDep";
 import useInput from "../hooks/useInput";
 
 interface Props {
-  onShow: (state: boolean) => void;
+  onShowCreate: (state: boolean) => void;
 }
-export default function CreateDep({ onShow }: Props) {
+export default function CreateUser({ onShowCreate }: Props) {
   const {
-    value: depName,
+    value: userName,
     isValidInput: isDepNameValid,
     setIsFormSubmitted,
     isFormSubmitted,
@@ -19,8 +19,8 @@ export default function CreateDep({ onShow }: Props) {
     setIsFormSubmitted(true);
 
     if (isDepNameValid) {
-      createDepartment(depName);
-      onShow(false);
+      createDepartment(userName);
+      onShowCreate(false);
     }
   };
   const className = !isDepNameValid && isFormSubmitted ? "error" : "root-input";
@@ -30,27 +30,61 @@ export default function CreateDep({ onShow }: Props) {
       <div
         className="w-screen h-screen absolute left-0 top-0 z-9 bg-black opacity-40"
         onClick={() => {
-          onShow(false);
+          onShowCreate(false);
         }}
       ></div>
       <form
         onSubmit={handleSubmit}
-        className="w-[101%] bg-white flex flex-col gap-y-5 p-10 rounded-tl-[50px] rounded-tr-[50px] absolute -bottom-40 left-[50%] right-[50%] translate-x-[-50.05%] z-10"
+        className="w-[101%] bg-white flex flex-col gap-y-3 p-10 rounded-tl-[50px] rounded-tr-[50px] absolute -bottom-40 left-[50%] right-[50%] translate-x-[-50.05%] z-10"
       >
         <div className="flex flex-col text-start">
           <label
             className="ml-1 mb-1 text-black text-base font-normal"
             htmlFor="department"
           >
-            Enter department name
+            Enter user name
           </label>
           <input
             className={className}
-            id="department"
             type="text"
-            placeholder="Enter department name"
-            value={depName}
-            onChange={depNameChangeHandler}
+            placeholder="Enter employee name"
+            value={userName}
+          />
+          {isFormSubmitted && !isDepNameValid && (
+            <span className="ml-1 my-1 text-red-600 text-xs font-normal">
+              Invalid input
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col text-start">
+          <label
+            className="ml-1 mb-1 text-black text-base font-normal"
+            htmlFor="department"
+          >
+            Enter  user email
+          </label>
+          <input
+            className={className}
+            type="text"
+            placeholder="Enter employee email"
+          />
+          {isFormSubmitted && !isDepNameValid && (
+            <span className="ml-1 my-1 text-red-600 text-xs font-normal">
+              Invalid input
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col text-start">
+          <label
+            className="ml-1 mb-1 text-black text-base font-normal"
+            htmlFor="department"
+          >
+            Enter  user role
+          </label>
+          <input
+            className={className}
+            type="text"
+            placeholder="Enter employee role"
           />
           {isFormSubmitted && !isDepNameValid && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
@@ -63,7 +97,7 @@ export default function CreateDep({ onShow }: Props) {
             type="button"
             className="w-[113px] h-[50px] left-0 top-0 rounded-[5px] border-2 border-black"
             onClick={() => {
-              onShow(false);
+              onShowCreate(false);
             }}
           >
             Cancel

@@ -12,7 +12,10 @@ import { AuthContextProvider } from "./store/AuthContext";
 import Root from "./routes/root";
 import Departments from "./pages/Departments";
 import { depLoader } from "./pages/Departments";
+import { userLoader } from "./pages/Users";
 import { DepContextProvider } from "./store/DepContext";
+import { Users } from "./pages/Users";
+import { UserContextProvider } from "./store/UserContext";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +26,11 @@ const router = createBrowserRouter([
         path: "departments",
         element: <Departments />,
         loader: depLoader,
+      },
+      {
+        path: "users",
+        element: <Users />,
+        loader: userLoader,
       },
     ],
   },
@@ -53,9 +61,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AuthContextProvider>
       <DepContextProvider>
-        <Card>
-          <RouterProvider router={router} />
-        </Card>
+        <UserContextProvider>
+          <Card>
+            <RouterProvider router={router} />
+          </Card>
+        </UserContextProvider>
       </DepContextProvider>
     </AuthContextProvider>
   </React.StrictMode>

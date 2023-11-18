@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
 import { Department } from "../shared/types/User";
-import { json } from "react-router";
 
 interface DepContext {
   departments: Department[];

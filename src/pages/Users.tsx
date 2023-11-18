@@ -1,27 +1,23 @@
-import { useEffect, useState } from "react";
-import plus from "../assets/Add Button.svg";
-import CreateDep from "../components/CreateDep";
 import { defer, useLoaderData } from "react-router";
-import { Department } from "../shared/types/User";
-import edit from "../assets/edit.svg";
+import profileAdd from "../assets/profile-add.svg";
+import editUser from "../assets/editUser.svg";
+import removeUser from "../assets/removeUser.svg";
 import btc from "../assets/bitcoin-(btc).svg";
-import { default as deleteIcon } from "../assets/delete.svg";
-import { useDep } from "../hooks/useDep";
-import UpdateDep from "../components/UpdateDep";
-interface DepData {
-  depId: string;
-  depName: string;
-}
+import sendMoney from "../assets/money-send.svg";
+import { User } from "../shared/types/User";
+import { useUser } from "../hooks/useUser";
+import { useEffect, useState } from "react";
+import CreateUser from "../components/CreateUser";
 
-export default function Departments() {
-  const [showCreate, setShowCreateDep] = useState(false);
-  const [showUpdate, setShowUpdateDep] = useState(false);
-  const [depData, setDepData] = useState<DepData>({ depId: "", depName: "" });
-  const { departments, setDepartments, deleteDepartment } = useDep();
+export const Users = () => {
+  const [showCreate, setShowCreate] = useState(false);
+  const { users, setUsers, deleteUser } = useUser();
   const { data } = useLoaderData() as any;
+
   useEffect(() => {
-    setDepartments(data.departments);
+    setUsers(data.users);
   }, []);
+
   return (
     <div className="h-screen">
       <main className="px-8">
@@ -30,7 +26,7 @@ export default function Departments() {
           <div
             className="flex flex-row items-center justify-center gap-x-[6px] px-2"
             onClick={() => {
-              setShowCreateDep(true);
+              setShowCreate(true);
             }}
           >
             <button className=" text-xs text-[#FFCA11] font-light cursor-pointer">
@@ -38,85 +34,79 @@ export default function Departments() {
             </button>
             <img
               className="h-[11px] w-[11px] cursor-pointer"
-              src={plus}
+              src={profileAdd}
               alt="add"
             />
           </div>
         </header>
 
-        {departments.length <= 0 ? (
+        {users.length <= 0 ? (
           <img
             className="h-[40px] w-[40px] absolute translate-x-[50%] right-[50%] top-[50%] cursor-pointer"
-            onClick={() => {
-              setShowCreateDep(true);
-            }}
-            src={plus}
+            src={profileAdd}
             alt="add"
+            onClick={() => {
+              setShowCreate(true);
+            }}
           />
         ) : (
           <ul className="mt-5 flex flex-col gap-y-5">
-            {departments.map((dep: Department) => (
+            {users.map((user: User) => (
               <li
-                key={dep._id}
+                key={user._id}
                 className="flex flex-row justify-between items-center bg-white h-16 px-4 rounded-md"
               >
                 <div className="flex flex-col text-black text-sm font-medium">
-                  <span>{dep.departmentName}</span>
+                  <span>{user.name}</span>
                   <div className="flex flex-row gap-x-1 items-center">
                     <img
                       className="w-3 h-3 cursor-pointer"
                       src={btc}
                       alt="btc"
-                      onClick={() => {
-                        setShowUpdateDep(true);
-                      }}
                     />
-                    <span className="font-normal text-xs">{dep.totalCoin}</span>
+                    <span className="font-normal text-xs">
+                      {user.totalCoin}
+                    </span>
                   </div>
                 </div>
                 <div className="flex flex-row gap-x-3">
                   <img
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
-                    src={edit}
+                    src={editUser}
                     alt="edit"
+                  />
+                  <img
+                    className="w-[13.78px] h-[15.50px] cursor-pointer"
+                    src={removeUser}
+                    alt="delete"
                     onClick={() => {
-                      setShowUpdateDep(true);
-                      setDepData({
-                        depId: dep._id,
-                        depName: dep.departmentName,
-                      });
+                      deleteUser(user._id);
                     }}
                   />
                   <img
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
-                    src={deleteIcon}
-                    alt="delete"
-                    onClick={() => {
-                      deleteDepartment(dep._id);
-                    }}
+                    src={sendMoney}
+                    alt="transaction"
                   />
                 </div>
               </li>
             ))}
           </ul>
         )}
-
-        {showCreate && <CreateDep onShow={setShowCreateDep} />}
-        {showUpdate && (
-          <UpdateDep onShow={setShowUpdateDep} depData={depData} />
-        )}
       </main>
+      {showCreate && <CreateUser onShowCreate={setShowCreate} />}
     </div>
   );
-}
+};
 
-export const depLoader = async () => {
+export const userLoader = async () => {
   try {
-    const res = await fetch("http://localhost:4000/api/department/get");
+    const res = await fetch("http://localhost:4000/api/user/get");
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    let data: Department[] = await res.json();
+    let data: User[] = await res.json();
+    console.log(data);
     return defer({ data });
   } catch (err) {
     console.error(err);

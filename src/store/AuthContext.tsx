@@ -8,6 +8,7 @@ import React, {
 import { User } from "../shared/types/User";
 import { Role } from "../shared/enums/Role";
 const initialUser: User = {
+  _id: "",
   name: "",
   email: "",
   password: "",
@@ -17,6 +18,7 @@ const initialUser: User = {
   departmentId: 0,
   role: Role.User,
   jobTitle: "",
+  totalCoin: 0,
 };
 
 interface AuthState {

@@ -10,7 +10,7 @@ export default function useSignup() {
     setIsLoading(true);
     console.log(user);
     try {
-      const res = await fetch("http://localhost:4000/api/auth/signup", {
+      const res = await fetch("http://localhost:4000/api/user/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),

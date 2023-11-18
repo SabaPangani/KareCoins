@@ -7,7 +7,7 @@ interface DepContext {
   setDepartments: (departments: Department[]) => void;
   createDepartment: (departmentName: string) => void;
   deleteDepartment: (departmentId: string) => void;
-  updateDepartment: (departmentId: string) => void;
+  updateDepartment: (departmentId: string, departmentName: string) => void;
 }
 
 export const DepContext = createContext<DepContext>({
@@ -54,7 +54,37 @@ export const DepContextProvider = ({ children }: Props) => {
     }
   };
 
-  const updateDepartment = async (departmentId: string) => {};
+  const updateDepartment = async (
+    departmentId: string,
+    departmentName: string
+  ) => {
+    try {
+      const res = await fetch("http://localhost:4000/api/department/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          departmentId,
+          departmentName,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        console.error(json);
+        return;
+      }
+      console.log(json.department);
+
+      setDepartments((prev) =>
+        prev.map((department) =>
+          department._id === departmentId ? json.department : department
+        )
+      );
+    } catch (err) {
+      console.error("Failed to create department ", err);
+    }
+  };
 
   const deleteDepartment = async (departmentId: string) => {
     try {

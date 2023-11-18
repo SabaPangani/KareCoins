@@ -1,29 +1,40 @@
+import { useState } from "react";
 import { useDep } from "../hooks/useDep";
 import useInput from "../hooks/useInput";
 
+interface DepData {
+  depId: string;
+  depName: string;
+}
+
 interface Props {
   onShow: (state: boolean) => void;
+  depData: DepData;
 }
-export default function CreateDep({ onShow }: Props) {
+export default function UpdateDep({ onShow, depData }: Props) {
   const {
-    value: depName,
+    value: departmentName,
     isValidInput: isDepNameValid,
     setIsFormSubmitted,
     isFormSubmitted,
     valueChangeHandler: depNameChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
-  const { createDepartment } = useDep();
+  const { updateDepartment } = useDep();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
 
-    if (isDepNameValid) {
-      createDepartment(depName);
+    if (isDepNameValid && depData.depName !== departmentName) {
+      updateDepartment(depData.depId, departmentName);
+      onShow(false);
     }
-    onShow(false);
   };
-  const className = !isDepNameValid && isFormSubmitted ? "error" : "root-input";
+
+  const className =
+    (!isDepNameValid && isFormSubmitted) || depData.depName === departmentName
+      ? "error"
+      : "root-input";
 
   return (
     <>
@@ -47,9 +58,9 @@ export default function CreateDep({ onShow }: Props) {
           <input
             className={className}
             id="department"
+            defaultValue={depData.depName}
             type="text"
             placeholder="Enter department name"
-            value={depName}
             onChange={depNameChangeHandler}
           />
           {isFormSubmitted && !isDepNameValid && (
@@ -72,7 +83,7 @@ export default function CreateDep({ onShow }: Props) {
             className="w-[113px] h-[50px] bg-yellow-400 rounded-[5px]"
             type="submit"
           >
-            Add
+            Update
           </button>
         </div>
       </form>

@@ -7,10 +7,18 @@ import edit from "../assets/edit.svg";
 import btc from "../assets/bitcoin-(btc).svg";
 import { default as deleteIcon } from "../assets/delete.svg";
 import { useDep } from "../hooks/useDep";
+import UpdateDep from "../components/UpdateDep";
+interface DepData {
+  depId: string;
+  depName: string;
+}
+
 export default function Departments() {
-  const [show, setShow] = useState(false);
+  const [showCreate, setShowCreateDep] = useState(false);
+  const [showUpdate, setShowUpdateDep] = useState(false);
+  const [depData, setDepData] = useState<DepData>({ depId: "", depName: "" });
   var { departments, setDepartments, deleteDepartment } = useDep();
-  const {data} = useLoaderData();
+  const { data } = useLoaderData() as any;
   useEffect(() => {
     setDepartments(data.departments);
   }, []);
@@ -22,7 +30,7 @@ export default function Departments() {
           <div
             className="flex flex-row items-center justify-center gap-x-[6px] px-2"
             onClick={() => {
-              setShow(true);
+              setShowCreateDep(true);
             }}
           >
             <button className=" text-xs text-[#FFCA11] font-light cursor-pointer">
@@ -40,7 +48,7 @@ export default function Departments() {
           <img
             className="h-[40px] w-[40px] absolute translate-x-[50%] right-[50%] top-[50%] cursor-pointer"
             onClick={() => {
-              setShow((prev) => !prev);
+              setShowCreateDep(true);
             }}
             src={plus}
             alt="add"
@@ -58,7 +66,10 @@ export default function Departments() {
                     <img
                       className="w-3 h-3 cursor-pointer"
                       src={btc}
-                      alt="edit"
+                      alt="btc"
+                      onClick={() => {
+                        setShowUpdateDep(true);
+                      }}
                     />
                     <span className="font-normal text-xs">{dep.totalCoin}</span>
                   </div>
@@ -68,6 +79,10 @@ export default function Departments() {
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
                     src={edit}
                     alt="edit"
+                    onClick={() => {
+                      setShowUpdateDep(true);
+                      setDepData({ depId: dep._id, depName: dep.departmentName });
+                    }}
                   />
                   <img
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
@@ -83,7 +98,10 @@ export default function Departments() {
           </ul>
         )}
 
-        {show && <CreateDep onShow={setShow} />}
+        {showCreate && <CreateDep onShow={setShowCreateDep} />}
+        {showUpdate && (
+          <UpdateDep onShow={setShowUpdateDep} depData={depData} />
+        )}
       </main>
     </div>
   );

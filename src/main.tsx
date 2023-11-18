@@ -12,7 +12,7 @@ import { AuthContextProvider } from "./store/AuthContext";
 import Root from "./routes/root";
 import Departments from "./pages/Departments";
 import { depLoader } from "./pages/Departments";
-import { DepContextProvider } from "./store/depContext";
+import { DepContextProvider } from "./store/DepContext";
 
 const router = createBrowserRouter([
   {

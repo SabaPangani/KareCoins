@@ -10,7 +10,7 @@ export default function Root() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    !state.user ? navigate("/auth/login") : navigate("/home");
+    !state.user ? navigate("/auth/login") : navigate("/departments");
   }, [state.user]);
   return (
     <>

@@ -27,7 +27,7 @@ export default function Login() {
     setIsFormSubmitted(true);
     if (!isFormInvalid) {
       login(email, password);
-      navigate("/");
+      navigate("/departments");
     }
   };
   const isFormInvalid = !isEmailValid || !isPassValid;
@@ -35,11 +35,7 @@ export default function Login() {
   return (
     <>
       <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
-        <img
-          className="w-18"
-          src={coinLogo}
-          alt=""
-        />
+        <img className="w-18" src={coinLogo} alt="" />
         <h1 className="text-3xl text-white">Log In</h1>
       </div>
       <form onSubmit={handleSubmit} className="form-parent">

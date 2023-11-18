@@ -1,3 +1,4 @@
+import { useDep } from "../hooks/useDep";
 import useInput from "../hooks/useInput";
 
 interface Props {
@@ -12,43 +13,26 @@ export default function CreateDep({ onShow }: Props) {
     valueChangeHandler: depNameChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
+  const { createDepartment } = useDep();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
 
-    const compId = localStorage.getItem("company");
-    if (compId) {
-      var pedCompId = JSON.parse(compId);
-    }
     if (isDepNameValid) {
-      try {
-        const res = await fetch(
-          "http://localhost:4000/api/department/create-dep",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              departmentName: depName,
-              companyId: pedCompId,
-            }),
-          }
-        );
-
-        if (!res.ok) {
-          const json = await res.json();
-          console.error(json);
-          return;
-        }
-      } catch (err) {
-        console.error("Failed to create department ", err);
-      }
+      createDepartment(depName);
     }
+    onShow(false);
   };
   const className = !isDepNameValid && isFormSubmitted ? "error" : "root-input";
 
   return (
     <>
-    <div className="w-screen h-screen absolute left-0 top-0 z-9 bg-black opacity-40"></div>
+      <div
+        className="w-screen h-screen absolute left-0 top-0 z-9 bg-black opacity-40"
+        onClick={() => {
+          onShow(false);
+        }}
+      ></div>
       <form
         onSubmit={handleSubmit}
         className="w-[101%] bg-white flex flex-col gap-y-5 p-10 rounded-tl-[50px] rounded-tr-[50px] absolute -bottom-40 left-[50%] right-[50%] translate-x-[-50.05%] z-10"

@@ -10,3 +10,10 @@ export interface User {
   role: Role;
   jobTitle: string;
 }
+
+export interface Department {
+  _id: string
+  departmentName: string;
+  companyId: string;
+  totalCoin: number;
+}

@@ -10,7 +10,9 @@ import RegisterPassword from "./components/RegisterPass";
 import Auth from "./pages/Auth";
 import { AuthContextProvider } from "./store/AuthContext";
 import Root from "./routes/root";
-import Home from "./pages/Home";
+import Departments from "./pages/Departments";
+import { depLoader } from "./pages/Departments";
+import { DepContextProvider } from "./store/depContext";
 
 const router = createBrowserRouter([
   {
@@ -18,8 +20,9 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       {
-        path: "home",
-        element: <Home />,
+        path: "departments",
+        element: <Departments />,
+        loader: depLoader,
       },
     ],
   },
@@ -49,9 +52,11 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AuthContextProvider>
-      <Card>
-        <RouterProvider router={router} />
-      </Card>
+      <DepContextProvider>
+        <Card>
+          <RouterProvider router={router} />
+        </Card>
+      </DepContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );

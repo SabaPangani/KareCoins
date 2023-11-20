@@ -63,7 +63,7 @@ export default function RegisterComp() {
           />
         </div>
         {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-600">Company or email is incorrect!</p>
+          <p className="text-red-600">Invalid credentials!</p>
         )}
         <Link to={"/auth/login"}>
           <p className="text-white text-sm font-light underline">

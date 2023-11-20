@@ -93,7 +93,7 @@ export const AuthContextProvider = ({ children }: Props) => {
     try {
       console.log(companyName);
       const res = await fetch(
-        "http://localhost:4000/api/company/create-company",
+        "http://localhost:4000/api/company/create",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -71,7 +71,7 @@ export default function RegisterPassword() {
           />
         </div>
         {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-600">{errorMsg}</p>
+          <p className="text-red-600">Invalid credentials!</p>
         )}
         <Link to={"/auth/login"}>
           <p className="text-white text-sm font-light underline">

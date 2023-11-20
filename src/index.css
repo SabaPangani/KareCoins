@@ -37,4 +37,7 @@
   .root-input {
     @apply w-[300px] h-[50px] bg-white rounded-[5px] border-2 border-black placeholder:text-sm px-3;
   }
+  .active{
+    @apply after:bg-[#FFC600] after:absolute after:w-9 after:h-9 after:-top-4 after:left-1/2 after:translate-x-[-50%] after:rounded-full after:z-[-1] relative
+  }
 }

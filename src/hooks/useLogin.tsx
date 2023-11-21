@@ -14,15 +14,14 @@ export default function useLogin() {
         body: JSON.stringify({ email, password }),
       });
 
+      const json = await res.json();
+      
       if (!res.ok) {
-        const json = await res.json();
         setIsLoading(false);
         setError(json.message);
         console.error(json.message);
         return;
       }
-
-      const json = await res.json();
 
       localStorage.setItem(
         "user",

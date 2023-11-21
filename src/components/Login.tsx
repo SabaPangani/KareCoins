@@ -9,12 +9,15 @@ export default function Login() {
   const {
     value: email,
     setIsFormSubmitted,
+    isValidInput: isEmailValid,
     valueChangeHandler: emailChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
-  const { value: password, valueChangeHandler: passChangeHandler } = useInput(
-    (value: string) => value.trim() !== ""
-  );
+  const {
+    value: password,
+    isValidInput: isPassValid,
+    valueChangeHandler: passChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +36,7 @@ export default function Login() {
             Email
           </label>
           <input
-            className={`${error ? "error" : "input"}`}
+            className={error && !isEmailValid ? "error" : "input"}
             id="email"
             type="text"
             placeholder="Enter your email"
@@ -46,7 +49,7 @@ export default function Login() {
             Password
           </label>
           <input
-            className={`${error ? "error" : "input"}`}
+            className={error && !isPassValid ? "error" : "input"}
             id="password"
             type="password"
             placeholder="Enter your password"

@@ -11,21 +11,30 @@ export default function CreateUser({ onShowCreate }: Props) {
   const [deps, setDeps] = useState<Department[]>([]);
   const [depName, setDepName] = useState("");
   const { addUser, error } = useUser();
-  const { value: userName, valueChangeHandler: nameChangeHandler } = useInput(
-    (value: string) => value.trim() !== ""
-  );
-  const { value: email, valueChangeHandler: emailChangeHandler } = useInput(
-    (value: string) => value.trim() !== ""
-  );
-  const { value: role, valueChangeHandler: roleChangeHandler } = useInput(
-    (value: string) => value.trim() !== ""
-  );
-  const { value: jobTitle, valueChangeHandler: jobTitleChangeHandler } =
-    useInput((value: string) => value.trim() !== "");
+  const {
+    value: userName,
+    isValidInput: isNameValid,
+    valueChangeHandler: nameChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
+  const {
+    value: email,
+    isValidInput: isEmailValid,
+    valueChangeHandler: emailChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
+  const {
+    value: role,
+    isValidInput: isRoleValid,
+    valueChangeHandler: roleChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
+  const {
+    value: jobTitle,
+    isValidInput: isJobValid,
+    valueChangeHandler: jobTitleChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
   useEffect(() => {
-    console.log(depName, " depName");
-  }, []);
+    console.log(error, " error")
+  }, [error]);
   const depChangeHandler = (selectedOption: string | undefined) => {
     if (selectedOption !== undefined) {
       setDepName(selectedOption);
@@ -39,10 +48,7 @@ export default function CreateUser({ onShowCreate }: Props) {
     control: (provided: any, state: any) => ({
       ...provided,
       background: "#fff",
-      border:
-        isFormSubmitted && depName.trim() === ""
-          ? "2px solid rgb(220 38 38)"
-          : "2px solid black",
+      border: error && !depName ? "2px solid rgb(220 38 38)" : "2px solid black",
       minHeight: "30px",
       height: "50px",
       borderRadius: "5px",
@@ -113,7 +119,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user name
           </label>
           <input
-            className={`${!error ? "error" : "root-input"}`}
+            className={error && !isNameValid ? "error" : "root-input"}
             type="text"
             name="name"
             placeholder="Enter employee name"
@@ -134,7 +140,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user email
           </label>
           <input
-            className={`${error ? "error" : "root-input"}`}
+            className={error && !isEmailValid ? "error" : "root-input"}
             name="email"
             type="text"
             placeholder="Enter employee email"
@@ -155,7 +161,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user role
           </label>
           <input
-            className={`${error ? "error" : "root-input"}`}
+            className={error && !isRoleValid ? "error" : "root-input"}
             name="role"
             type="text"
             placeholder="Enter employee role"
@@ -176,7 +182,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter job title
           </label>
           <input
-            className={`${error ? "error" : "root-input"}`}
+            className={error && !isJobValid ? "error" : "root-input"}
             name="jobTitle"
             type="text"
             placeholder="Enter employee role"
@@ -200,7 +206,7 @@ export default function CreateUser({ onShowCreate }: Props) {
               depChangeHandler(selectedValue?.label);
             }}
           ></Select>
-          {error && (
+          {error && !depName && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>

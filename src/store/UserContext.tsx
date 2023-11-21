@@ -73,9 +73,9 @@ export const UserContextProvider = ({ children }: Props) => {
       }
 
       setUsers((prev) => [...prev, json.user]);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to create user ", err);
-      setError(err.message);
+      setError((err as Error).message);
     }
   };
 
@@ -104,6 +104,7 @@ export const UserContextProvider = ({ children }: Props) => {
       const json = await res.json();
 
       if (!res.ok) {
+        setError(json.message);
         console.error(json);
         return;
       }
@@ -113,6 +114,7 @@ export const UserContextProvider = ({ children }: Props) => {
       );
     } catch (err) {
       console.error("Failed to create user ", err);
+      setError((err as Error).message);
     }
   };
 

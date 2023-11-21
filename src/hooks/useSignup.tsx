@@ -17,8 +17,9 @@ export default function useSignup() {
         body: JSON.stringify(user),
       });
 
+      const json = await res.json();
+      
       if (!res.ok) {
-        const json = await res.json();
         setIsLoading(false);
         setError(json.message);
         console.error(json.message);

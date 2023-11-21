@@ -8,9 +8,11 @@ export default function RegisterPassword() {
   const { signup, error, isLoading } = useSignup();
   const [confirmPassword, setConfirmPassword] = useState("");
   const { user } = useAuth();
-  const { value: password, valueChangeHandler: passChangeHandler } = useInput(
-    (value: string) => value.trim() !== ""
-  );
+  const {
+    value: password,
+    isValidInput: isPassValid,
+    valueChangeHandler: passChangeHandler,
+  } = useInput((value: string) => value.trim() !== "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ export default function RegisterPassword() {
             Password
           </label>
           <input
-            className={`${error ? "error" : "input"}`}
+            className={error && !isPassValid ? "error" : "input"}
             id="password"
             type="password"
             placeholder="Enter password"
@@ -47,7 +49,9 @@ export default function RegisterPassword() {
             Confirm password
           </label>
           <input
-            className={`${error ? "error" : "input"}`}
+            className={
+              error && confirmPassword.trim() === "" ? "error" : "input"
+            }
             id="confirmPassword"
             type="password"
             placeholder="Confirm password"

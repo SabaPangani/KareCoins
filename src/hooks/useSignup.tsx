@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { User } from "../shared/types/User";
+import { useNavigate } from "react-router";
 // import { useAuth } from "./useAuth";
 
 export default function useSignup() {
-  // const { dispatch } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
   const signup = async (user: User) => {
     setIsLoading(true);
     console.log(user);
@@ -24,6 +25,8 @@ export default function useSignup() {
         return;
       }
 
+      setIsLoading(false);
+      navigate("/auth/login");
     } catch (err) {
       setIsLoading(false);
       setError("An error occurred. Please try again.");

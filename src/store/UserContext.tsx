@@ -3,6 +3,7 @@ import { User } from "../shared/types/User";
 
 interface UserContext {
   users: User[];
+  error: string;
   setUsers: (users: User[]) => void;
   addUser: (
     name: string,
@@ -24,6 +25,7 @@ interface UserContext {
 
 export const UserContext = createContext<UserContext>({
   users: [],
+  error: "",
   setUsers: () => {},
   addUser: async () => {},
   editUser: async () => {},
@@ -36,6 +38,7 @@ interface Props {
 
 export const UserContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState("");
   const addUser = async (
     userName: string,
     userEmail: string,
@@ -65,13 +68,14 @@ export const UserContextProvider = ({ children }: Props) => {
 
       if (!res.ok) {
         console.error(json);
+        setError(json.message);
         return;
       }
-      console.log(json, " users json");
 
       setUsers((prev) => [...prev, json.user]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to create user ", err);
+      setError(err.message);
     }
   };
 
@@ -105,9 +109,7 @@ export const UserContextProvider = ({ children }: Props) => {
       }
 
       setUsers((prev) =>
-        prev.map((user) =>
-          user._id === userId ? json.user : user
-        )
+        prev.map((user) => (user._id === userId ? json.user : user))
       );
     } catch (err) {
       console.error("Failed to create user ", err);
@@ -137,6 +139,7 @@ export const UserContextProvider = ({ children }: Props) => {
     <UserContext.Provider
       value={{
         users,
+        error,
         setUsers,
         deleteUser,
         editUser,

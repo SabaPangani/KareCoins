@@ -10,29 +10,18 @@ interface Props {
 export default function CreateUser({ onShowCreate }: Props) {
   const [deps, setDeps] = useState<Department[]>([]);
   const [depName, setDepName] = useState("");
-  const { addUser } = useUser();
-  const {
-    value: userName,
-    isValidInput: isNameValid,
-    setIsFormSubmitted,
-    isFormSubmitted,
-    valueChangeHandler: nameChangeHandler,
-  } = useInput((value: string) => value.trim() !== "");
-  const {
-    value: email,
-    isValidInput: isEmailValid,
-    valueChangeHandler: emailChangeHandler,
-  } = useInput((value: string) => value.trim() !== "");
-  const {
-    value: role,
-    isValidInput: isRoleValid,
-    valueChangeHandler: roleChangeHandler,
-  } = useInput((value: string) => value.trim() !== "");
-  const {
-    value: jobTitle,
-    isValidInput: isJobValid,
-    valueChangeHandler: jobTitleChangeHandler,
-  } = useInput((value: string) => value.trim() !== "");
+  const { addUser, error } = useUser();
+  const { value: userName, valueChangeHandler: nameChangeHandler } = useInput(
+    (value: string) => value.trim() !== ""
+  );
+  const { value: email, valueChangeHandler: emailChangeHandler } = useInput(
+    (value: string) => value.trim() !== ""
+  );
+  const { value: role, valueChangeHandler: roleChangeHandler } = useInput(
+    (value: string) => value.trim() !== ""
+  );
+  const { value: jobTitle, valueChangeHandler: jobTitleChangeHandler } =
+    useInput((value: string) => value.trim() !== "");
 
   useEffect(() => {
     console.log(depName, " depName");
@@ -85,10 +74,7 @@ export default function CreateUser({ onShowCreate }: Props) {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
-    if (isNameValid && isEmailValid && isRoleValid) {
-      addUser(userName, email, role, jobTitle, depName);
-    }
+    addUser(userName, email, role, jobTitle, depName);
   };
   useEffect(() => {
     const fetchDeps = async () => {
@@ -127,16 +113,14 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user name
           </label>
           <input
-            className={`${
-              !isNameValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={`${!error ? "error" : "root-input"}`}
             type="text"
             name="name"
             placeholder="Enter employee name"
             value={userName}
             onChange={nameChangeHandler}
           />
-          {isFormSubmitted && !isNameValid && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -150,18 +134,16 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user email
           </label>
           <input
-            className={`${
-              !isEmailValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={`${error ? "error" : "root-input"}`}
             name="email"
             type="text"
             placeholder="Enter employee email"
             value={email}
             onChange={emailChangeHandler}
           />
-          {isFormSubmitted && !isEmailValid && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
-              Invalid input
+              {error}
             </span>
           )}
         </div>
@@ -173,16 +155,14 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter user role
           </label>
           <input
-            className={`${
-              !isRoleValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={`${error ? "error" : "root-input"}`}
             name="role"
             type="text"
             placeholder="Enter employee role"
             value={role}
             onChange={roleChangeHandler}
           />
-          {isFormSubmitted && !isRoleValid && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -196,16 +176,14 @@ export default function CreateUser({ onShowCreate }: Props) {
             Enter job title
           </label>
           <input
-            className={`${
-              !isJobValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={`${error ? "error" : "root-input"}`}
             name="jobTitle"
             type="text"
             placeholder="Enter employee role"
             value={jobTitle}
             onChange={jobTitleChangeHandler}
           />
-          {isFormSubmitted && !isJobValid && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -222,7 +200,7 @@ export default function CreateUser({ onShowCreate }: Props) {
               depChangeHandler(selectedValue?.label);
             }}
           ></Select>
-          {isFormSubmitted && depName === "" && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>

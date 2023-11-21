@@ -2,39 +2,26 @@ import React, { useState } from "react";
 import coinLogo from "../assets/coinLogo.png";
 import { useAuth } from "../hooks/useAuth";
 import useSignup from "../hooks/useSignup";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useInput from "../hooks/useInput";
 export default function RegisterPassword() {
-  const { signup } = useSignup();
+  const { signup, error, isLoading } = useSignup();
   const [confirmPassword, setConfirmPassword] = useState("");
   const { user } = useAuth();
-  const navigate = useNavigate();
-  let errorMsg = "Invalid credentials";
-  const {
-    value: password,
-    isValidInput: isPasswordValid,
-    setIsFormSubmitted,
-    isFormSubmitted,
-    valueChangeHandler: passChangeHandler,
-  } = useInput((value: string) => value.trim() !== "");
+  const { value: password, valueChangeHandler: passChangeHandler } = useInput(
+    (value: string) => value.trim() !== ""
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
 
     if (password !== confirmPassword) {
-      errorMsg = "Passwords do not match";
       console.error("Passwords do not match");
       return;
     }
 
-    if (!isFormInvalid) {
-      await signup({ ...user, password });
-      navigate("/auth/login");
-    }
+    await signup({ ...user, password });
   };
-  const isFormInvalid = !isPasswordValid;
-  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
@@ -47,7 +34,7 @@ export default function RegisterPassword() {
             Password
           </label>
           <input
-            className={className}
+            className={`${error ? "error" : "input"}`}
             id="password"
             type="password"
             placeholder="Enter password"
@@ -60,7 +47,7 @@ export default function RegisterPassword() {
             Confirm password
           </label>
           <input
-            className={className}
+            className={`${error ? "error" : "input"}`}
             id="confirmPassword"
             type="password"
             placeholder="Confirm password"
@@ -70,9 +57,7 @@ export default function RegisterPassword() {
             }}
           />
         </div>
-        {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-600">Invalid credentials!</p>
-        )}
+        {error && <p className="text-red-600">Invalid credentials!</p>}
         <Link to={"/auth/login"}>
           <p className="text-white text-sm font-light underline">
             Already have an account?
@@ -80,7 +65,7 @@ export default function RegisterPassword() {
         </Link>
 
         <div className="flex justify-end text-black font-medium">
-          <button className="auth-btn" type="submit">
+          <button className="auth-btn" type="submit" disabled={isLoading}>
             Register
           </button>
         </div>

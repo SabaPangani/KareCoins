@@ -77,7 +77,7 @@ export const AuthContextProvider = ({ children }: Props) => {
       let parsedUser = JSON.parse(user);
       dispatch({ type: "LOGIN", payload: parsedUser });
     }
-  }, []);
+  }, [user]);
 
   const handleStep1 = (name: string, phoneNum: number) => {
     setUser((prev) => {

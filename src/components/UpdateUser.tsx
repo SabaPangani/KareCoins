@@ -17,12 +17,10 @@ interface Props {
 export default function UpdateUser({ onShowEdit, userData }: Props) {
   const [deps, setDeps] = useState<Department[]>([]);
   const [depName, setDepName] = useState("");
-  const { editUser } = useUser();
+  const { editUser, error } = useUser();
   const {
     value: userName,
     isValidInput: isNameValid,
-    setIsFormSubmitted,
-    isFormSubmitted,
     valueChangeHandler: nameChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
   const {
@@ -63,9 +61,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
       ...provided,
       background: "#fff",
       border:
-        isFormSubmitted && depName.trim() === ""
-          ? "2px solid rgb(220 38 38)"
-          : "2px solid black",
+        error && !depName ? "2px solid rgb(220 38 38)" : "2px solid black",
       minHeight: "30px",
       height: "50px",
       borderRadius: "5px",
@@ -97,11 +93,8 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
-    if (isNameValid && isEmailValid && isRoleValid) {
-      editUser(userData.userId, userName, email, role, jobTitle, depName);
-      onShowEdit(false);
-    }
+    editUser(userData.userId, userName, email, role, jobTitle, depName);
+    onShowEdit(false);
   };
   useEffect(() => {
     const fetchDeps = async () => {
@@ -141,16 +134,14 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             Enter user name
           </label>
           <input
-            className={`${
-              !isNameValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={!isNameValid && error ? "error" : "root-input"}
             defaultValue={userData.userName}
             type="text"
             name="name"
             placeholder="Enter employee name"
             onChange={nameChangeHandler}
           />
-          {isFormSubmitted && !isNameValid && (
+          {error && !isNameValid && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -164,16 +155,14 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             Enter user email
           </label>
           <input
-            className={`${
-              !isEmailValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={!isEmailValid && error ? "error" : "root-input"}
             defaultValue={userData.userEmail}
             name="email"
             type="text"
             placeholder="Enter employee email"
             onChange={emailChangeHandler}
           />
-          {isFormSubmitted && !isEmailValid && (
+          {error && !isEmailValid && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -187,16 +176,14 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             Enter user role
           </label>
           <input
-            className={`${
-              !isRoleValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={!isRoleValid && error ? "error" : "root-input"}
             defaultValue={userData.userRole}
             name="role"
             type="text"
             placeholder="Enter employee role"
             onChange={roleChangeHandler}
           />
-          {isFormSubmitted && !isRoleValid && (
+          {error && !isRoleValid && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -210,16 +197,14 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             Enter job title
           </label>
           <input
-            className={`${
-              !isJobValid && isFormSubmitted ? "error" : "root-input"
-            }`}
+            className={!isJobValid && error ? "error" : "root-input"}
             defaultValue={userData.jobTitle}
             name="jobTitle"
             type="text"
             placeholder="Enter employee role"
             onChange={jobTitleChangeHandler}
           />
-          {isFormSubmitted && !isJobValid && (
+          {error && !isJobValid && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>
@@ -236,7 +221,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
               depChangeHandler(selectedValue?.label);
             }}
           ></Select>
-          {isFormSubmitted && depName === "" && (
+          {error && !depName && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>

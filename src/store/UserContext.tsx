@@ -1,8 +1,9 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { User } from "../shared/types/User";
 
 interface UserContext {
   users: User[];
+  error: string;
   setUsers: (users: User[]) => void;
   addUser: (
     name: string,
@@ -24,6 +25,7 @@ interface UserContext {
 
 export const UserContext = createContext<UserContext>({
   users: [],
+  error: "",
   setUsers: () => {},
   addUser: async () => {},
   editUser: async () => {},
@@ -36,6 +38,27 @@ interface Props {
 
 export const UserContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/user/get");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const json = await res.json();
+        const users = json.users;
+        console.log(users)
+        setUsers(users as User[]);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    };
+    fetchUsers();
+  }, []);
+
   const addUser = async (
     userName: string,
     userEmail: string,
@@ -65,13 +88,14 @@ export const UserContextProvider = ({ children }: Props) => {
 
       if (!res.ok) {
         console.error(json);
+        setError(json.message);
         return;
       }
-      console.log(json, " users json");
 
       setUsers((prev) => [...prev, json.user]);
     } catch (err) {
       console.error("Failed to create user ", err);
+      setError((err as Error).message);
     }
   };
 
@@ -100,17 +124,17 @@ export const UserContextProvider = ({ children }: Props) => {
       const json = await res.json();
 
       if (!res.ok) {
+        setError(json.message);
         console.error(json);
         return;
       }
 
       setUsers((prev) =>
-        prev.map((user) =>
-          user._id === userId ? json.user : user
-        )
+        prev.map((user) => (user._id === userId ? json.user : user))
       );
     } catch (err) {
       console.error("Failed to create user ", err);
+      setError((err as Error).message);
     }
   };
 
@@ -137,6 +161,7 @@ export const UserContextProvider = ({ children }: Props) => {
     <UserContext.Provider
       value={{
         users,
+        error,
         setUsers,
         deleteUser,
         editUser,

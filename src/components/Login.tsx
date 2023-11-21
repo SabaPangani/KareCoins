@@ -1,14 +1,14 @@
 import React from "react";
 import coinLogo from "../assets/coinLogo.png";
 import useLogin from "../hooks/useLogin";
-import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import useInput from "../hooks/useInput";
 export default function Login() {
-  const { login } = useLogin();
+  const { login, error, isLoading } = useLogin();
 
   const {
     value: email,
+    setIsFormSubmitted,
     isValidInput: isEmailValid,
     valueChangeHandler: emailChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
@@ -16,22 +16,14 @@ export default function Login() {
   const {
     value: password,
     isValidInput: isPassValid,
-    setIsFormSubmitted,
-    isFormSubmitted,
     valueChangeHandler: passChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
-  const navigate = useNavigate();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
-    if (!isFormInvalid) {
-      login(email, password);
-      navigate("/departments");
-    }
+    await login(email, password);
   };
-  const isFormInvalid = !isEmailValid || !isPassValid;
-  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
@@ -44,7 +36,7 @@ export default function Login() {
             Email
           </label>
           <input
-            className={className}
+            className={error && !isEmailValid ? "error" : "input"}
             id="email"
             type="text"
             placeholder="Enter your email"
@@ -57,7 +49,7 @@ export default function Login() {
             Password
           </label>
           <input
-            className={className}
+            className={error && !isPassValid ? "error" : "input"}
             id="password"
             type="password"
             placeholder="Enter your password"
@@ -66,9 +58,7 @@ export default function Login() {
           />
         </div>
 
-        {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-600">Email or password is incorrect!</p>
-        )}
+        {error && <p className="text-red-600">{error}</p>}
 
         <Link to={"/auth/step1"}>
           <p className=" text-white text-sm font-light underline">
@@ -77,7 +67,7 @@ export default function Login() {
         </Link>
 
         <div className="flex justify-end text-black font-medium">
-          <button className="auth-btn" type="submit">
+          <button className="auth-btn" type="submit" disabled={isLoading}>
             Login
           </button>
         </div>

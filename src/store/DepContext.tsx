@@ -1,8 +1,9 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { Department } from "../shared/types/User";
 
 interface DepContext {
   departments: Department[];
+  error: string;
   setDepartments: (departments: Department[]) => void;
   createDepartment: (departmentName: string) => void;
   deleteDepartment: (departmentId: string) => void;
@@ -11,6 +12,7 @@ interface DepContext {
 
 export const DepContext = createContext<DepContext>({
   departments: [],
+  error: "",
   setDepartments: () => {},
   createDepartment: async () => {},
   updateDepartment: async () => {},
@@ -23,6 +25,24 @@ interface Props {
 
 export const DepContextProvider = ({ children }: Props) => {
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDeps = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/department/get");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const deps = await res.json();
+        setDepartments(deps.departments as Department[]);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    };
+    fetchDeps();
+  }, []);
 
   const createDepartment = async (departmentName: string) => {
     const compId = localStorage.getItem("company");
@@ -43,6 +63,7 @@ export const DepContextProvider = ({ children }: Props) => {
 
       if (!res.ok) {
         console.error(json);
+        setError(json.message);
         return;
       }
       console.log(json);
@@ -50,6 +71,7 @@ export const DepContextProvider = ({ children }: Props) => {
       setDepartments((prev) => [...prev, json.department]);
     } catch (err) {
       console.error("Failed to create department ", err);
+      setError((err as Error).message);
     }
   };
 
@@ -71,6 +93,7 @@ export const DepContextProvider = ({ children }: Props) => {
 
       if (!res.ok) {
         console.error(json);
+        setError(json.message);
         return;
       }
       console.log(json.department);
@@ -82,6 +105,7 @@ export const DepContextProvider = ({ children }: Props) => {
       );
     } catch (err) {
       console.error("Failed to create department ", err);
+      setError((err as Error).message);
     }
   };
 
@@ -108,6 +132,7 @@ export const DepContextProvider = ({ children }: Props) => {
     <DepContext.Provider
       value={{
         departments,
+        error,
         setDepartments,
         deleteDepartment,
         updateDepartment,

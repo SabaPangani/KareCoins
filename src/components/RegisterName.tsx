@@ -24,17 +24,14 @@ export default function RegisterName() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
-  
+
     if (!isFormInvalid) {
-      console.log(name);
-      console.log(phoneNumber);
       handleStep1(name, parseInt(phoneNumber));
       navigate("/auth/step2");
     }
   };
-  
-  const isFormInvalid = !isNameValid || !isPhoneValid
-  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
+
+  const isFormInvalid = !isNameValid || !isPhoneValid;
   return (
     <>
       <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
@@ -47,7 +44,9 @@ export default function RegisterName() {
             Name
           </label>
           <input
-            className={className}
+            className={`${
+              !isNameValid && isFormSubmitted ? "error" : "input"
+            }`}
             id="name"
             type="text"
             placeholder="Enter your name"
@@ -60,7 +59,9 @@ export default function RegisterName() {
             Phone number
           </label>
           <input
-            className={className}
+            className={`${
+              !isPhoneValid && isFormSubmitted ? "error" : "input"
+            }`}
             id="phone"
             type="tel"
             placeholder="Enter your phone number"

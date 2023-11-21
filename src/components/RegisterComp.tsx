@@ -22,13 +22,13 @@ export default function RegisterComp() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
+
     if (!isFormInvalid) {
       handleStep2(companyName, email);
       navigate("/auth/step3");
     }
   };
   const isFormInvalid = !isCompNameValid || !isEmailValid;
-  const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
     <>
       <div className="flex flex-col gap-y-10 justify-center items-center w-full mt-[5.3rem] mb-[30px]">
@@ -41,7 +41,7 @@ export default function RegisterComp() {
             Company
           </label>
           <input
-            className={className}
+            className={`${!companyName && isFormSubmitted ? "error" : "input"}`}
             id="company"
             type="text"
             placeholder="Enter company name"
@@ -54,7 +54,9 @@ export default function RegisterComp() {
             Email
           </label>
           <input
-            className={className}
+            className={`${
+              !isEmailValid && isFormSubmitted ? "error" : "input"
+            }`}
             id="email"
             type="email"
             placeholder="Enter your email"

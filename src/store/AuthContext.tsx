@@ -14,8 +14,8 @@ const initialUser: User = {
   password: "",
   contactNumber: 0,
   companyName: "",
-  companyId: 0,
-  departmentId: 0,
+  companyId: "",
+  departmentId: "",
   role: Role.User,
   jobTitle: "",
   totalCoin: 0,
@@ -77,7 +77,7 @@ export const AuthContextProvider = ({ children }: Props) => {
       let parsedUser = JSON.parse(user);
       dispatch({ type: "LOGIN", payload: parsedUser });
     }
-  }, []);
+  }, [user]);
 
   const handleStep1 = (name: string, phoneNum: number) => {
     setUser((prev) => {

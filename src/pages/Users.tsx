@@ -72,7 +72,9 @@ export const Users = () => {
                 className="flex flex-row justify-between items-center bg-white h-16 px-4 rounded-md"
               >
                 <div className="flex flex-col text-black text-sm font-medium">
-                  <span>{user.name}</span>
+                  <div className="flex flex-col">
+                    <span>{user.name}</span>
+                  </div>
                   <div className="flex flex-row gap-x-1 items-center">
                     <img
                       className="w-3 h-3 cursor-pointer"
@@ -119,13 +121,13 @@ export const Users = () => {
           </ul>
         )}
       </main>
-      {showCreate && <CreateUser onShowCreate={setShowCreate} />}
+      {showCreate && <CreateUser onShowCreate={setShowCreate}/>}
       {showEdit && <UpdateUser onShowEdit={setShowEdit} userData={userData} />}
     </div>
   );
 };
 
-export const userLoader = async () => {
+export const usersLoader = async () => {
   try {
     const res = await fetch("http://localhost:4000/api/user/get");
     if (!res.ok) {

@@ -32,14 +32,14 @@ export default function MyAccount() {
   );
 }
 
-export const accLoader = async () => {
+export const userLoader = async () => {
   const user = localStorage.getItem("user");
   if (user) {
     let userPed = JSON.parse(user);
     var userId = userPed.id;
   }
   try {
-    const res = await fetch(`http://localhost:4000/api/user/get/`, {
+    const res = await fetch(`http://localhost:4000/api/user/getUser`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

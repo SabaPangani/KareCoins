@@ -2,7 +2,7 @@ import logo from "../assets/Group 2.svg";
 import bell from "../assets/notification-bing.svg";
 import { NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import user from "../assets/user-octagon.svg"
+import user from "../assets/user-octagon.svg";
 import { useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useEffect } from "react";
@@ -11,7 +11,7 @@ export default function Root() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!state.user) {
+    if (state.user?.name === "") {
       navigate("/auth/login");
     }
   }, [state.user]);

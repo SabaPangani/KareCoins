@@ -12,11 +12,11 @@ import { AuthContextProvider } from "./store/AuthContext";
 import Root from "./routes/root";
 import Departments from "./pages/Departments";
 import { depLoader } from "./pages/Departments";
-import { userLoader } from "./pages/Users";
+import { usersLoader } from "./pages/Users";
 import { DepContextProvider } from "./store/DepContext";
 import { Users } from "./pages/Users";
 import { UserContextProvider } from "./store/UserContext";
-import MyAccount, { accLoader } from "./pages/MyAccount";
+import MyAccount, { userLoader } from "./pages/MyAccount";
 
 const router = createBrowserRouter([
   {
@@ -31,12 +31,12 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <Users />,
-        loader: userLoader,
+        loader: usersLoader,
       },
       {
         path: "my-account",
         element: <MyAccount />,
-        loader: accLoader,
+        loader: userLoader,
       },
     ],
   },

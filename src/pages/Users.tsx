@@ -8,9 +8,24 @@ import { User } from "../shared/types/User";
 import { useUser } from "../hooks/useUser";
 import { useEffect, useState } from "react";
 import CreateUser from "../components/CreateUser";
-
+import UpdateUser from "../components/UpdateUser";
+interface UserData {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userRole: string;
+  jobTitle: string;
+}
 export const Users = () => {
   const [showCreate, setShowCreate] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [userData, setUserData] = useState<UserData>({
+    userId: "",
+    userName: "",
+    userEmail: "",
+    userRole: "",
+    jobTitle: "",
+  });
   const { users, setUsers, deleteUser } = useUser();
   const { data } = useLoaderData() as any;
 
@@ -22,7 +37,7 @@ export const Users = () => {
     <div className="h-screen">
       <main className="px-8">
         <header className="flex flex-row justify-between items-center font-medium mt-7">
-          <span className="text-white text-sm">Departments</span>
+          <span className="text-white text-sm">Users</span>
           <div
             className="flex flex-row items-center justify-center gap-x-[6px] px-2"
             onClick={() => {
@@ -74,6 +89,16 @@ export const Users = () => {
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
                     src={editUser}
                     alt="edit"
+                    onClick={() => {
+                      setShowEdit(true);
+                      setUserData({
+                        userId: user._id,
+                        userName: user.name,
+                        userEmail: user.email,
+                        userRole: user.role,
+                        jobTitle: user.jobTitle,
+                      });
+                    }}
                   />
                   <img
                     className="w-[13.78px] h-[15.50px] cursor-pointer"
@@ -95,6 +120,7 @@ export const Users = () => {
         )}
       </main>
       {showCreate && <CreateUser onShowCreate={setShowCreate} />}
+      {showEdit && <UpdateUser onShowEdit={setShowEdit} userData={userData} />}
     </div>
   );
 };

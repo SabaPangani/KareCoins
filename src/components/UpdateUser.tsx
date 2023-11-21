@@ -3,14 +3,21 @@ import useInput from "../hooks/useInput";
 import { Department } from "../shared/types/User";
 import Select from "react-select";
 import { useUser } from "../hooks/useUser";
-
-interface Props {
-  onShowCreate: (state: boolean) => void;
+interface UserData {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userRole: string;
+  jobTitle: string;
 }
-export default function CreateUser({ onShowCreate }: Props) {
+interface Props {
+  onShowEdit: (state: boolean) => void;
+  userData: UserData;
+}
+export default function UpdateUser({ onShowEdit, userData }: Props) {
   const [deps, setDeps] = useState<Department[]>([]);
   const [depName, setDepName] = useState("");
-  const { addUser } = useUser();
+  const { editUser } = useUser();
   const {
     value: userName,
     isValidInput: isNameValid,
@@ -34,10 +41,15 @@ export default function CreateUser({ onShowCreate }: Props) {
     valueChangeHandler: jobTitleChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
-  useEffect(() => {
-    console.log(depName, " depName");
-  }, []);
   const depChangeHandler = (selectedOption: string | undefined) => {
+    console.log(
+      selectedOption,
+      userName,
+      email,
+      role,
+      jobTitle,
+      "selectedOption"
+    );
     if (selectedOption !== undefined) {
       setDepName(selectedOption);
     }
@@ -87,7 +99,8 @@ export default function CreateUser({ onShowCreate }: Props) {
     e.preventDefault();
     setIsFormSubmitted(true);
     if (isNameValid && isEmailValid && isRoleValid) {
-      addUser(userName, email, role, jobTitle, depName);
+      editUser(userData.userId, userName, email, role, jobTitle, depName);
+      onShowEdit(false);
     }
   };
   useEffect(() => {
@@ -105,6 +118,7 @@ export default function CreateUser({ onShowCreate }: Props) {
       }
     };
     fetchDeps();
+    console.log(userData);
   }, []);
 
   return (
@@ -112,7 +126,7 @@ export default function CreateUser({ onShowCreate }: Props) {
       <div
         className="w-screen h-screen absolute left-0 top-0 z-9 bg-black opacity-40"
         onClick={() => {
-          onShowCreate(false);
+          onShowEdit(false);
         }}
       ></div>
       <form
@@ -130,10 +144,10 @@ export default function CreateUser({ onShowCreate }: Props) {
             className={`${
               !isNameValid && isFormSubmitted ? "error" : "root-input"
             }`}
+            defaultValue={userData.userName}
             type="text"
             name="name"
             placeholder="Enter employee name"
-            value={userName}
             onChange={nameChangeHandler}
           />
           {isFormSubmitted && !isNameValid && (
@@ -153,10 +167,10 @@ export default function CreateUser({ onShowCreate }: Props) {
             className={`${
               !isEmailValid && isFormSubmitted ? "error" : "root-input"
             }`}
+            defaultValue={userData.userEmail}
             name="email"
             type="text"
             placeholder="Enter employee email"
-            value={email}
             onChange={emailChangeHandler}
           />
           {isFormSubmitted && !isEmailValid && (
@@ -176,10 +190,10 @@ export default function CreateUser({ onShowCreate }: Props) {
             className={`${
               !isRoleValid && isFormSubmitted ? "error" : "root-input"
             }`}
+            defaultValue={userData.userRole}
             name="role"
             type="text"
             placeholder="Enter employee role"
-            value={role}
             onChange={roleChangeHandler}
           />
           {isFormSubmitted && !isRoleValid && (
@@ -199,10 +213,10 @@ export default function CreateUser({ onShowCreate }: Props) {
             className={`${
               !isJobValid && isFormSubmitted ? "error" : "root-input"
             }`}
+            defaultValue={userData.jobTitle}
             name="jobTitle"
             type="text"
             placeholder="Enter employee role"
-            value={jobTitle}
             onChange={jobTitleChangeHandler}
           />
           {isFormSubmitted && !isJobValid && (
@@ -233,7 +247,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             type="button"
             className="w-[113px] h-[50px] left-0 top-0 rounded-[5px] border-2 border-black"
             onClick={() => {
-              onShowCreate(false);
+              onShowEdit(false);
             }}
           >
             Cancel
@@ -242,7 +256,7 @@ export default function CreateUser({ onShowCreate }: Props) {
             className="w-[113px] h-[50px] bg-yellow-400 rounded-[5px]"
             type="submit"
           >
-            Add
+            Change
           </button>
         </div>
       </form>

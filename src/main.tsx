@@ -16,6 +16,7 @@ import { userLoader } from "./pages/Users";
 import { DepContextProvider } from "./store/DepContext";
 import { Users } from "./pages/Users";
 import { UserContextProvider } from "./store/UserContext";
+import MyAccount, { accLoader } from "./pages/MyAccount";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
         path: "users",
         element: <Users />,
         loader: userLoader,
+      },
+      {
+        path: "my-account",
+        element: <MyAccount />,
+        loader: accLoader,
       },
     ],
   },

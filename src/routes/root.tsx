@@ -1,7 +1,8 @@
 import logo from "../assets/Group 2.svg";
 import bell from "../assets/notification-bing.svg";
-import user from "../assets/user-octagon.svg";
+import { NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import user from "../assets/user-octagon.svg"
 import { useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useEffect } from "react";
@@ -24,7 +25,9 @@ export default function Root() {
         />
 
         <img src={bell} alt="notification" />
-        <img src={user} alt="pfp" />
+        <NavLink to="/my-account">
+          <img src={user} alt="pfp" />
+        </NavLink>
       </header>
       <Outlet />
       <Navbar />

@@ -4,16 +4,29 @@ import { User } from "../shared/types/User";
 interface UserContext {
   users: User[];
   setUsers: (users: User[]) => void;
-  createUser: (userName: string) => void;
-  updateUser: (userId: string, userName: string) => void;
+  addUser: (
+    name: string,
+    email: string,
+    role: string,
+    jobTitle: string,
+    departmentName: string
+  ) => void;
+  editUser: (
+    userId: string,
+    name: string,
+    email: string,
+    role: string,
+    jobTitle: string,
+    departmentName: string
+  ) => void;
   deleteUser: (userId: string) => void;
 }
 
 export const UserContext = createContext<UserContext>({
   users: [],
   setUsers: () => {},
-  createUser: async () => {},
-  updateUser: async () => {},
+  addUser: async () => {},
+  editUser: async () => {},
   deleteUser: async () => {},
 });
 
@@ -23,14 +36,28 @@ interface Props {
 
 export const UserContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
-
-  const createUser = async (departmentName: string) => {
+  const addUser = async (
+    userName: string,
+    userEmail: string,
+    userRole: string,
+    jobTitle: string,
+    departmentName: string
+  ) => {
+    const compId = localStorage.getItem("company");
+    if (compId) {
+      var pedCompId = JSON.parse(compId);
+    }
     try {
       const res = await fetch("http://localhost:4000/api/user/addUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          userName,
+          userEmail,
+          userRole,
           departmentName,
+          jobTitle,
+          companyId: pedCompId,
         }),
       });
 
@@ -40,16 +67,20 @@ export const UserContextProvider = ({ children }: Props) => {
         console.error(json);
         return;
       }
-      console.log(json);
+      console.log(json, " users json");
 
-      setUsers((prev) => [...prev, json.department]);
+      setUsers((prev) => [...prev, json.user]);
     } catch (err) {
-      console.error("Failed to create department ", err);
+      console.error("Failed to create user ", err);
     }
   };
 
-  const updateUser = async (
-    departmentId: string,
+  const editUser = async (
+    userId: string,
+    userName: string,
+    userEmail: string,
+    userRole: string,
+    jobTitle: string,
     departmentName: string
   ) => {
     try {
@@ -57,8 +88,12 @@ export const UserContextProvider = ({ children }: Props) => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          departmentId,
+          userId,
+          userName,
+          userEmail,
+          userRole,
           departmentName,
+          jobTitle,
         }),
       });
 
@@ -68,15 +103,14 @@ export const UserContextProvider = ({ children }: Props) => {
         console.error(json);
         return;
       }
-      console.log(json.department);
 
       setUsers((prev) =>
-        prev.map((department) =>
-          department._id === departmentId ? json.department : department
+        prev.map((user) =>
+          user._id === userId ? json.user : user
         )
       );
     } catch (err) {
-      console.error("Failed to create department ", err);
+      console.error("Failed to create user ", err);
     }
   };
 
@@ -105,8 +139,8 @@ export const UserContextProvider = ({ children }: Props) => {
         users,
         setUsers,
         deleteUser,
-        updateUser,
-        createUser,
+        editUser,
+        addUser,
       }}
     >
       {children}

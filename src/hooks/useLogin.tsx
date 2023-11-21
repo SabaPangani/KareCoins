@@ -22,10 +22,10 @@ export default function useLogin() {
       }
 
       const json = await res.json();
-
+      console.log(json)
       localStorage.setItem(
         "user",
-        JSON.stringify({ email: json.email, token: json.token })
+        JSON.stringify({ id: json.userId, token: json.token })
       );
       localStorage.setItem("company", JSON.stringify(json.companyId));
     } catch (err) {

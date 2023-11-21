@@ -24,14 +24,15 @@ export default function RegisterName() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFormSubmitted(true);
-    console.log(isFormInvalid)
-    console.log(name)
-    console.log(phoneNumber)
+  
     if (!isFormInvalid) {
+      console.log(name);
+      console.log(phoneNumber);
       handleStep1(name, parseInt(phoneNumber));
       navigate("/auth/step2");
     }
   };
+  
   const isFormInvalid = !isNameValid || !isPhoneValid
   const className = isFormInvalid && isFormSubmitted ? "error" : "input";
   return (
@@ -69,7 +70,7 @@ export default function RegisterName() {
         </div>
 
         {isFormInvalid && isFormSubmitted && (
-          <p className="text-red-600">Name or phone number!</p>
+          <p className="text-red-600">Invalid credentials!</p>
         )}
 
         <Link to={"/auth/login"}>

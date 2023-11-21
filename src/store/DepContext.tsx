@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { Department } from "../shared/types/User";
 
 interface DepContext {
@@ -26,6 +26,23 @@ interface Props {
 export const DepContextProvider = ({ children }: Props) => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDeps = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/department/get");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const deps = await res.json();
+        setDepartments(deps.departments as Department[]);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    };
+    fetchDeps();
+  }, []);
 
   const createDepartment = async (departmentName: string) => {
     const compId = localStorage.getItem("company");

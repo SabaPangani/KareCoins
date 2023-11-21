@@ -127,7 +127,7 @@ export const Users = () => {
   );
 };
 
-export const userLoader = async () => {
+export const usersLoader = async () => {
   try {
     const res = await fetch("http://localhost:4000/api/user/get");
     if (!res.ok) {

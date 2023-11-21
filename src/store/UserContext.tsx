@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { User } from "../shared/types/User";
 
 interface UserContext {
@@ -39,6 +39,26 @@ interface Props {
 export const UserContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/user/get");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const json = await res.json();
+        const users = json.users;
+        console.log(users)
+        setUsers(users as User[]);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    };
+    fetchUsers();
+  }, []);
+
   const addUser = async (
     userName: string,
     userEmail: string,

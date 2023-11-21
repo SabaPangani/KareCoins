@@ -6,8 +6,8 @@ export interface User {
   password: string;
   contactNumber: number;
   companyName: string;
-  companyId: number;
-  departmentId: number;
+  companyId: string;
+  departmentId: string;
   role: Role;
   jobTitle: string;
   totalCoin: number;

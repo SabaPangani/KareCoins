@@ -61,9 +61,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
       ...provided,
       background: "#fff",
       border:
-        error && !depName
-          ? "2px solid rgb(220 38 38)"
-          : "2px solid black",
+        error && !depName ? "2px solid rgb(220 38 38)" : "2px solid black",
       minHeight: "30px",
       height: "50px",
       borderRadius: "5px",
@@ -96,6 +94,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     editUser(userData.userId, userName, email, role, jobTitle, depName);
+    onShowEdit(false);
   };
   useEffect(() => {
     const fetchDeps = async () => {

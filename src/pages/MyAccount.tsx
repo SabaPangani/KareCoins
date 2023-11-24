@@ -36,23 +36,28 @@ export const userLoader = async () => {
   const user = localStorage.getItem("user");
   if (user) {
     let userPed = JSON.parse(user);
-    var userId = userPed.id;
-  }
-  try {
-    const res = await fetch(`http://localhost:4000/api/user/getUser`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId,
-      }),
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+    let userId = userPed.id;
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/user/getUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userPed?.token}`,
+        },
+        body: JSON.stringify({
+          userId,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      let user: User = await res.json();
+      return defer({ user });
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-    let user: User = await res.json();
-    return defer({ user });
-  } catch (err) {
-    console.error(err);
-    throw err;
   }
+  return null;
 };

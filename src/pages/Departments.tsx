@@ -111,15 +111,24 @@ export default function Departments() {
 }
 
 export const depLoader = async () => {
-  try {
-    const res = await fetch("http://localhost:4000/api/department/get");
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+  const item = localStorage.getItem("user");
+  if (item) {
+    const user = JSON.parse(item);
+    try {
+      const res = await fetch("http://localhost:4000/api/department/get", {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      let data: Department[] = await res.json();
+      return defer({ data });
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-    let data: Department[] = await res.json();
-    return defer({ data });
-  } catch (err) {
-    console.error(err);
-    throw err;
   }
+  return null;
 };

@@ -39,17 +39,27 @@ interface Props {
 export const UserContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
+  const [user, setUser] = useState({ id: "", token: "" });
 
   useEffect(() => {
+    const item = localStorage.getItem("user");
+    if (item) {
+      const user = JSON.parse(item);
+      setUser(user);
+    }
     const fetchUsers = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/user/get");
+        const res = await fetch("http://localhost:4000/api/user/get", {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const json = await res.json();
         const users = json.users;
-        console.log(users)
+        console.log(users);
         setUsers(users as User[]);
       } catch (err) {
         console.error(err);
@@ -73,7 +83,10 @@ export const UserContextProvider = ({ children }: Props) => {
     try {
       const res = await fetch("http://localhost:4000/api/user/addUser", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
         body: JSON.stringify({
           userName,
           userEmail,
@@ -110,7 +123,10 @@ export const UserContextProvider = ({ children }: Props) => {
     try {
       const res = await fetch("http://localhost:4000/api/user/update", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
         body: JSON.stringify({
           userId,
           userName,
@@ -144,6 +160,7 @@ export const UserContextProvider = ({ children }: Props) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${user?.token}`,
         },
         body: JSON.stringify({ userId }),
       });

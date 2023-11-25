@@ -8,22 +8,16 @@ export default function CreateDep({ onShow }: Props) {
   const {
     value: depName,
     isValidInput: isDepNameValid,
-    setIsFormSubmitted,
-    isFormSubmitted,
     valueChangeHandler: depNameChangeHandler,
   } = useInput((value: string) => value.trim() !== "");
 
-  const { createDepartment } = useDep();
+  const { createDepartment, error } = useDep();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
 
-    if (isDepNameValid) {
-      createDepartment(depName);
-      onShow(false);
-    }
+    createDepartment(depName);
+    onShow(false);
   };
-  const className = !isDepNameValid && isFormSubmitted ? "error" : "root-input";
 
   return (
     <>
@@ -45,14 +39,14 @@ export default function CreateDep({ onShow }: Props) {
             Enter department name
           </label>
           <input
-            className={className}
+            className={!isDepNameValid && error ? "error" : "root-input"}
             id="department"
             type="text"
             placeholder="Enter department name"
             value={depName}
             onChange={depNameChangeHandler}
           />
-          {isFormSubmitted && !isDepNameValid && (
+          {error && (
             <span className="ml-1 my-1 text-red-600 text-xs font-normal">
               Invalid input
             </span>

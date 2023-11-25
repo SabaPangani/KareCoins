@@ -26,22 +26,32 @@ interface Props {
 export const DepContextProvider = ({ children }: Props) => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [error, setError] = useState("");
+  const [user, setUser] = useState({ id: "", token: "" });
 
   useEffect(() => {
-    const fetchDeps = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/api/department/get");
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+    const item = localStorage.getItem("user");
+    if (item) {
+      const user = JSON.parse(item);
+      setUser(user);
+
+      const fetchDeps = async () => {
+        try {
+          const res = await fetch("http://localhost:4000/api/department/get", {
+            headers: { Authorization: `Bearer ${user?.token || ""}` },
+          });
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const deps = await res.json();
+          console.log(deps);
+          setDepartments(deps.departments as Department[]);
+        } catch (err) {
+          console.error(err);
         }
-        const deps = await res.json();
-        setDepartments(deps.departments as Department[]);
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
-    };
-    fetchDeps();
+      };
+
+      fetchDeps();
+    }
   }, []);
 
   const createDepartment = async (departmentName: string) => {
@@ -52,7 +62,10 @@ export const DepContextProvider = ({ children }: Props) => {
     try {
       const res = await fetch("http://localhost:4000/api/department/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
         body: JSON.stringify({
           departmentName,
           companyId: pedCompId,
@@ -82,7 +95,10 @@ export const DepContextProvider = ({ children }: Props) => {
     try {
       const res = await fetch("http://localhost:4000/api/department/update", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${user?.token}`,
+        },
         body: JSON.stringify({
           departmentId,
           departmentName,
@@ -96,7 +112,6 @@ export const DepContextProvider = ({ children }: Props) => {
         setError(json.message);
         return;
       }
-      console.log(json.department);
 
       setDepartments((prev) =>
         prev.map((department) =>
@@ -115,6 +130,7 @@ export const DepContextProvider = ({ children }: Props) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
         },
         body: JSON.stringify({ departmentId }),
       });

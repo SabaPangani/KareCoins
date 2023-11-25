@@ -241,7 +241,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             className="w-[113px] h-[50px] bg-yellow-400 rounded-[5px]"
             type="submit"
           >
-            Change
+            Update
           </button>
         </div>
       </form>

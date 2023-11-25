@@ -9,6 +9,7 @@ import { useUser } from "../hooks/useUser";
 import { useEffect, useState } from "react";
 import CreateUser from "../components/CreateUser";
 import UpdateUser from "../components/UpdateUser";
+import ConfirmDelete from "../components/UI/ConfirmDelete";
 interface UserData {
   userId: string;
   userName: string;
@@ -19,6 +20,7 @@ interface UserData {
 export const Users = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     userId: "",
     userName: "",
@@ -26,7 +28,7 @@ export const Users = () => {
     userRole: "",
     jobTitle: "",
   });
-  const { users, setUsers, deleteUser } = useUser();
+  const { users, setUsers } = useUser();
   const { data } = useLoaderData() as any;
 
   useEffect(() => {
@@ -107,7 +109,14 @@ export const Users = () => {
                     src={removeUser}
                     alt="delete"
                     onClick={() => {
-                      deleteUser(user._id);
+                      setShowDelete(true);
+                      setUserData({
+                        userId: user._id,
+                        userName: user.name,
+                        userEmail: user.email,
+                        userRole: user.role,
+                        jobTitle: user.jobTitle,
+                      });
                     }}
                   />
                   <img
@@ -123,6 +132,14 @@ export const Users = () => {
       </main>
       {showCreate && <CreateUser onShowCreate={setShowCreate} />}
       {showEdit && <UpdateUser onShowEdit={setShowEdit} userData={userData} />}
+      {showDelete && (
+        <ConfirmDelete
+          onShowDelete={setShowDelete}
+          userData={userData}
+          action="user"
+          depData={{ depId: "", depName: "" }}
+        />
+      )}
     </div>
   );
 };

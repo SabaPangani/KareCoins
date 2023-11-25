@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import CreateUser from "../components/CreateUser";
 import UpdateUser from "../components/UpdateUser";
 import ConfirmDelete from "../components/UI/ConfirmDelete";
+import { useDep } from "../hooks/useDep";
 interface UserData {
   userId: string;
   userName: string;
@@ -29,6 +30,7 @@ export const Users = () => {
     jobTitle: "",
   });
   const { users, setUsers } = useUser();
+  const { departments } = useDep();
   const { data } = useLoaderData() as any;
 
   useEffect(() => {
@@ -74,8 +76,15 @@ export const Users = () => {
                 className="flex flex-row justify-between items-center bg-white h-16 px-4 rounded-md"
               >
                 <div className="flex flex-col text-black text-sm font-medium">
-                  <div className="flex flex-col">
+                  <div className="flex flex-row gap-x-1 items-center">
                     <span>{user.name}</span>
+                    <span className="text-[#FFCA11]">-</span>
+                    <span className="text-xs text-[#484848] font-normal">
+                      {
+                        departments.find((dep) => dep._id === user.departmentId)
+                          ?.departmentName
+                      }
+                    </span>
                   </div>
                   <div className="flex flex-row gap-x-1 items-center">
                     <img

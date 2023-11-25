@@ -121,7 +121,7 @@ export const Users = () => {
           </ul>
         )}
       </main>
-      {showCreate && <CreateUser onShowCreate={setShowCreate}/>}
+      {showCreate && <CreateUser onShowCreate={setShowCreate} />}
       {showEdit && <UpdateUser onShowEdit={setShowEdit} userData={userData} />}
     </div>
   );

@@ -24,7 +24,9 @@ export default function Root() {
           className="absolute -left-[-50%] translate-x-[-50%] top-7 bg-white rounded-full p-2"
         />
 
-        <img src={bell} alt="notification" />
+        <NavLink to="notifications">
+          <img src={bell} alt="notification" />
+        </NavLink>
         <NavLink to="/my-account">
           <img src={user} alt="pfp" />
         </NavLink>

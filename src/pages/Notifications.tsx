@@ -1,13 +1,11 @@
+import { useState } from "react";
 import AddBtn from "../assets/tick.svg";
 import DltBtn from "../assets/rejectBtn.svg";
 import Btc from "../assets/btc.svg";
 import Activestatus from "../assets/activeBtn.svg";
-import { useState } from "react";
 
 const Notifications = () => {
   const [isExpanded, setisExpanded] = useState(false);
-  const [first, setfirst] = useState(console.log("hello"));
-
   const handleExpand = () => {
     setisExpanded((cur) => !cur);
   };

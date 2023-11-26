@@ -104,7 +104,7 @@ export default function CreateReward({ onShowReward }: Props) {
   return (
     <>
       <div
-        className="w-screen h-screen absolute left-0 top-0 z-9 bg-black opacity-40"
+        className="w-screen h-screen absolute left-0 top-0 z-9 opacity-40"
         onClick={() => {
           onShowReward(false);
         }}

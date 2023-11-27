@@ -10,6 +10,9 @@ export default function Root() {
   const { state } = useAuth();
   const navigate = useNavigate();
 
+  // UPDATE USERS PAGE SELF VIEW
+
+
   useEffect(() => {
     if (state.user?.name === "") {
       navigate("/auth/login");

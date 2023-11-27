@@ -9,6 +9,8 @@ import { useUser } from "../hooks/useUser";
 import { useEffect, useState } from "react";
 import CreateUser from "../components/CreateUser";
 import UpdateUser from "../components/UpdateUser";
+import ConfirmDelete from "../components/UI/ConfirmDelete";
+import { useDep } from "../hooks/useDep";
 interface UserData {
   userId: string;
   userName: string;
@@ -19,6 +21,7 @@ interface UserData {
 export const Users = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     userId: "",
     userName: "",
@@ -26,7 +29,8 @@ export const Users = () => {
     userRole: "",
     jobTitle: "",
   });
-  const { users, setUsers, deleteUser } = useUser();
+  const { users, setUsers } = useUser();
+  const { departments } = useDep();
   const { data } = useLoaderData() as any;
 
   useEffect(() => {
@@ -72,8 +76,15 @@ export const Users = () => {
                 className="flex flex-row justify-between items-center bg-white h-16 px-4 rounded-md"
               >
                 <div className="flex flex-col text-black text-sm font-medium">
-                  <div className="flex flex-col">
+                  <div className="flex flex-row gap-x-1 items-center">
                     <span>{user.name}</span>
+                    <span className="text-[#FFCA11]">-</span>
+                    <span className="text-xs text-[#484848] font-normal">
+                      {
+                        departments.find((dep) => dep._id === user.departmentId)
+                          ?.departmentName
+                      }
+                    </span>
                   </div>
                   <div className="flex flex-row gap-x-1 items-center">
                     <img
@@ -107,7 +118,14 @@ export const Users = () => {
                     src={removeUser}
                     alt="delete"
                     onClick={() => {
-                      deleteUser(user._id);
+                      setShowDelete(true);
+                      setUserData({
+                        userId: user._id,
+                        userName: user.name,
+                        userEmail: user.email,
+                        userRole: user.role,
+                        jobTitle: user.jobTitle,
+                      });
                     }}
                   />
                   <img
@@ -123,6 +141,14 @@ export const Users = () => {
       </main>
       {showCreate && <CreateUser onShowCreate={setShowCreate} />}
       {showEdit && <UpdateUser onShowEdit={setShowEdit} userData={userData} />}
+      {showDelete && (
+        <ConfirmDelete
+          onShowDelete={setShowDelete}
+          userData={userData}
+          action="user"
+          depData={{ depId: "", depName: "" }}
+        />
+      )}
     </div>
   );
 };

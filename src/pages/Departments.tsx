@@ -8,6 +8,7 @@ import btc from "../assets/bitcoin-(btc).svg";
 import { default as deleteIcon } from "../assets/delete.svg";
 import { useDep } from "../hooks/useDep";
 import UpdateDep from "../components/UpdateDep";
+import ConfirmDelete from "../components/UI/ConfirmDelete";
 interface DepData {
   depId: string;
   depName: string;
@@ -16,6 +17,7 @@ interface DepData {
 export default function Departments() {
   const [showCreate, setShowCreateDep] = useState(false);
   const [showUpdate, setShowUpdateDep] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const [depData, setDepData] = useState<DepData>({ depId: "", depName: "" });
   const { departments, setDepartments, deleteDepartment } = useDep();
   const { data } = useLoaderData() as any;
@@ -80,11 +82,7 @@ export default function Departments() {
                     src={edit}
                     alt="edit"
                     onClick={() => {
-                      setShowUpdateDep(true);
-                      setDepData({
-                        depId: dep._id,
-                        depName: dep.departmentName,
-                      });
+                      setShowUpdateDep(true)
                     }}
                   />
                   <img
@@ -92,7 +90,11 @@ export default function Departments() {
                     src={deleteIcon}
                     alt="delete"
                     onClick={() => {
-                      deleteDepartment(dep._id);
+                      setShowDelete(true);
+                      setDepData({
+                        depId: dep._id,
+                        depName: dep.departmentName,
+                      });
                     }}
                   />
                 </div>
@@ -104,6 +106,20 @@ export default function Departments() {
         {showCreate && <CreateDep onShow={setShowCreateDep} />}
         {showUpdate && (
           <UpdateDep onShow={setShowUpdateDep} depData={depData} />
+        )}
+        {showDelete && (
+          <ConfirmDelete
+            onShowDelete={setShowDelete}
+            userData={{
+              userId: "",
+              userName: "",
+              userEmail: "",
+              userRole: "",
+              jobTitle: "",
+            }}
+            action="department"
+            depData={depData}
+          />
         )}
       </main>
     </div>

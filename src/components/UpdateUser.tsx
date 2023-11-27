@@ -3,6 +3,7 @@ import useInput from "../hooks/useInput";
 import { Department } from "../shared/types/User";
 import Select from "react-select";
 import { useUser } from "../hooks/useUser";
+import { useDep } from "../hooks/useDep";
 interface UserData {
   userId: string;
   userName: string;
@@ -17,6 +18,7 @@ interface Props {
 export default function UpdateUser({ onShowEdit, userData }: Props) {
   const [deps, setDeps] = useState<Department[]>([]);
   const [depName, setDepName] = useState("");
+  const { departments } = useDep();
   const { editUser, error } = useUser();
   const {
     value: userName,
@@ -97,22 +99,30 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
     onShowEdit(false);
   };
   useEffect(() => {
-    const fetchDeps = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/api/department/get");
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+    const item = localStorage.getItem("user");
+    if (item) {
+      const user = JSON.parse(item);
+      const fetchDeps = async () => {
+        try {
+          const res = await fetch("http://localhost:4000/api/department/get", {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          });
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const deps = await res.json();
+          setDeps(deps.departments as Department[]);
+        } catch (err) {
+          console.error(err);
+          throw err;
         }
-        const deps = await res.json();
-        setDeps(deps.departments as Department[]);
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
-    };
-    fetchDeps();
-    console.log(userData);
-  }, []);
+      };
+      fetchDeps();
+    }
+    console.log(departments);
+  }, [departments]);
 
   return (
     <>
@@ -241,7 +251,7 @@ export default function UpdateUser({ onShowEdit, userData }: Props) {
             className="w-[113px] h-[50px] bg-yellow-400 rounded-[5px]"
             type="submit"
           >
-            Change
+            Update
           </button>
         </div>
       </form>

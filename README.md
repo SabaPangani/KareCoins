@@ -1,4 +1,4 @@
-a Full-Stack Reward app using MERN,
+a Full-Stack Reward app using MERN stack,
 TypeScript, JWT, and Tailwind CSS. This involved
 implementing JWT-based authentication, allowing
 users to register within companies that had
